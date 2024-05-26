@@ -2,6 +2,7 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 
+import os
 import re
 from functools import lru_cache
 
@@ -29,22 +30,23 @@ class Settings(BaseSettings):
     """
 
     root_address: str = "http://127.0.0.1:8000"
-    redis: RedisDsn = "redis://localhost:6379/0?decode_responses=True"
-    skip_email_verification: bool = False
-    db_url: str | PostgresDsn = "postgresql://postgres:mysecretpassword@localhost:5432/classquiz"
-    hcaptcha_key: str | None = None
+    redis: RedisDsn = os.getenv("REDIS_URL", "redis://localhost:6379/0?decode_responses=True")
+    skip_email_verification: bool = True
+    db_url: str | PostgresDsn = os.getenv("DATABASE_URL", "postgresql://postgres:mysecretpassword@localhost:5432/classquiz")
+    hcaptcha_key: str | None = os.getenv("HCAPTCHA_KEY", None)
     recaptcha_key: str | None = None
-    mail_address: str
-    mail_password: str
-    mail_username: str
-    mail_server: str
-    mail_port: int
-    secret_key: str
+    mail_address: str = ""
+    mail_password: str = ""
+    mail_username: str = ""
+    mail_server: str = ""
+    mail_port: int = 587
+    secret_key: str = ""
     access_token_expire_minutes: int = 30
     cache_expiry: int = 86400
     sentry_dsn: str | None
-    meilisearch_url: str = "http://127.0.0.1:7700"
-    meilisearch_index: str = "classquiz"
+    meilisearch_url: str = os.getenv("MEILI_URL", "http://127.0.0.1:7700")
+    meilisearch_index: str = "default"
+    meilisearch_master_key: str | None = os.getenv("MEILI_MASTER_KEY", None)
     google_client_id: Optional[str]
     google_client_secret: Optional[str]
     github_client_id: Optional[str]
@@ -60,7 +62,7 @@ class Settings(BaseSettings):
     storage_backend: str | None = "local"
 
     # if storage_backend == "local":
-    storage_path: str | None
+    storage_path: str | None = "/tmp/storage"
 
     # if storage_backend == "s3":
     s3_access_key: str | None
@@ -98,7 +100,7 @@ storage: Storage = Storage(
     base_url=settings().s3_base_url,
 )
 
-meilisearch = MeiliSearch.Client(settings().meilisearch_url)
+meilisearch = MeiliSearch.Client(settings().meilisearch_url, settings().meilisearch_master_key)
 
 ALLOWED_TAGS_FOR_QUIZ = ["b", "strong", "i", "em", "small", "mark", "del", "sub", "sup"]
 
