@@ -106,4 +106,4 @@ app.include_router(sitemap.router, tags=["sitemap"], prefix="/api/v1/sitemap", i
 app.include_router(community.router, tags=["community"], prefix="/api/v1/community", include_in_schema=True)
 app.include_router(avatar.router, tags=["avatar"], prefix="/api/v1/avatar", include_in_schema=True)
 app.include_router(admin.router, tags=["admin"], prefix="/api/v1/admin", include_in_schema=True)
-app.mount("/", ASGIApp(sio))
+app.mount("/", ASGIApp(sio, socketio_path="/api/socket.io"))
