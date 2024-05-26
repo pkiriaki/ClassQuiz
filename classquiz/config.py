@@ -52,7 +52,7 @@ class Settings(BaseSettings):
     github_client_id: Optional[str]
     github_client_secret: Optional[str]
     custom_openid_provider: CustomOpenIDProvider | None = None
-    telemetry_enabled: bool = True
+    telemetry_enabled: bool = False
     free_storage_limit: int = 1074000000
     pixabay_api_key: str | None = None
     mods: list[str] = []
